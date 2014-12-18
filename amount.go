@@ -83,7 +83,7 @@ func (amount *Amount) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (amount *Amount) ToFloat() float64 {
+func (amount *Amount) Float() float64 {
 	amountInt := int(*amount)
 	return float64(amountInt) / 100
 }
