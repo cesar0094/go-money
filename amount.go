@@ -87,3 +87,9 @@ func (amount *Amount) Float() float64 {
 	amountInt := int(*amount)
 	return float64(amountInt) / 100
 }
+
+// NOTE: this function truncates decimals
+func (amount *Amount) Int() int {
+	amountInt := int(*amount)
+	return amountInt / 100
+}

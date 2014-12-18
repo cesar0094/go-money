@@ -175,3 +175,23 @@ func TestFloat(t *testing.T) {
 	assertEqual(testFloat, 12.00)
 
 }
+
+func TestInt(t *testing.T) {
+	assertEqual := func(val interface{}, exp interface{}) {
+		if val != exp {
+			t.Errorf("Expected %v, got %v.", exp, val)
+		}
+	}
+
+	testAmount := Amount(1234)
+	testInt := testAmount.Int()
+	assertEqual(testInt, 12)
+
+	testAmount = Amount(34)
+	testInt = testAmount.Int()
+	assertEqual(testInt, 0)
+
+	testAmount = Amount(1200)
+	testInt = testAmount.Int()
+	assertEqual(testInt, 12)
+}
