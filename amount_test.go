@@ -154,3 +154,24 @@ func TestJson(t *testing.T) {
 	assertEqual(err, nil)
 	assertEqual(price2, price)
 }
+
+func TestFloat(t *testing.T) {
+	assertEqual := func(val interface{}, exp interface{}) {
+		if val != exp {
+			t.Errorf("Expected %v, got %v.", exp, val)
+		}
+	}
+
+	testAmount := Amount(1234)
+	testFloat := testAmount.Float()
+	assertEqual(testFloat, 12.34)
+
+	testAmount = Amount(34)
+	testFloat = testAmount.Float()
+	assertEqual(testFloat, 0.34)
+
+	testAmount = Amount(1200)
+	testFloat = testAmount.Float()
+	assertEqual(testFloat, 12.00)
+
+}
