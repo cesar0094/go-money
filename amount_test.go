@@ -1,8 +1,16 @@
 package money
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"testing"
 )
+
+type Price struct {
+	XMLName  struct{} `xml:"Price" json:"-"`
+	Amount   Amount   `xml:"amount" json:"amount"`
+	Currency string   `xml:"currency" json:"currency"`
+}
 
 func TestParse(t *testing.T) {
 	assertEqual := func(val interface{}, exp interface{}) {
@@ -103,4 +111,46 @@ func TestParse(t *testing.T) {
 	}
 	assertEqual(testAmount, Amount(0))
 
+}
+
+func TestXml(t *testing.T) {
+	assertEqual := func(val interface{}, exp interface{}) {
+		if val != exp {
+			t.Errorf("Expected %v, got %v.", exp, val)
+		}
+	}
+	xmlStr := "<Price><amount>12.34</amount><currency>USD</currency></Price>"
+	price := Price{
+		Amount:   1234,
+		Currency: "USD",
+	}
+	xmlBytes, err := xml.Marshal(price)
+	assertEqual(err, nil)
+	assertEqual(string(xmlBytes), xmlStr)
+
+	price2 := Price{}
+	err = xml.Unmarshal([]byte(xmlStr), &price2)
+	assertEqual(err, nil)
+	assertEqual(price2, price)
+}
+
+func TestJson(t *testing.T) {
+	assertEqual := func(val interface{}, exp interface{}) {
+		if val != exp {
+			t.Errorf("Expected %v, got %v.", exp, val)
+		}
+	}
+	jsonStr := `{"amount":12.34,"currency":"USD"}`
+	price := Price{
+		Amount:   1234,
+		Currency: "USD",
+	}
+	jsonBytes, err := json.Marshal(price)
+	assertEqual(err, nil)
+	assertEqual(string(jsonBytes), jsonStr)
+
+	price2 := Price{}
+	err = json.Unmarshal([]byte(jsonStr), &price2)
+	assertEqual(err, nil)
+	assertEqual(price2, price)
 }
