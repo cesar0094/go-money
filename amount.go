@@ -33,36 +33,40 @@ func (amount *Amount) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		}
 		switch element := token.(type) {
 		case xml.CharData:
-			a, err := GetAmountFromBytes(element)
+			a, err := Parse(string(element))
 			if err != nil {
 				return err
 			}
-			*amount = *a
+			*amount = a
 		}
 	}
 	return nil
 }
 
-func Parse(bytes []byte) (*Amount, error) {
-	amountStr := string(bytes)
+func Parse(amountStr string) (Amount, error) {
+	// Make sure it is a valid float first
+	_, err := strconv.ParseFloat(amountStr, 64)
+	if err != nil {
+		return Amount(0), err
+	}
+
 	index := strings.Index(amountStr, ".")
 	pow := 2
 	amountStrLen := len(amountStr)
 	if index != -1 {
 		amountStr = strings.Replace(amountStr, ".", "", 1)
-		pow = amountStrLen - index - 3
+		index = amountStrLen - index
+		pow = 3 - index
 	}
 
 	a, err := strconv.Atoi(amountStr)
 	if err != nil {
-		fmt.Println("err", err)
-		return nil, err
+		return Amount(0), err
 	}
-	fmt.Println(pow)
 
-	a = a * int(math.Pow(float64(10), float64(pow)))
+	a = int(float64(a) * (math.Pow(float64(10), float64(pow))))
 	amount := (Amount)(a)
-	return &amount, nil
+	return amount, nil
 }
 
 func (amount Amount) MarshalJSON() ([]byte, error) {
@@ -71,11 +75,11 @@ func (amount Amount) MarshalJSON() ([]byte, error) {
 }
 
 func (amount *Amount) UnmarshalJSON(bytes []byte) error {
-	a, err := GetAmountFromBytes(bytes)
+	a, err := Parse(string(bytes))
 	if err != nil {
 		return err
 	}
-	*amount = *a
+	*amount = a
 	return nil
 }
 
