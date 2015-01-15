@@ -95,6 +95,11 @@ func (amount *Amount) Int() int {
 func (amount *Amount) String() string {
 	amountStr := strconv.Itoa(int(*amount))
 	length := len(amountStr)
+	// Add left zeros to have format "0.01" and "0.12"
+	for i := 0; i < 3-length; i += 1 {
+		amountStr = "0" + amountStr
+	}
+	length = len(amountStr)
 	decimals := amountStr[length-2:]
 	integers := amountStr[:length-2]
 	return integers + "." + decimals

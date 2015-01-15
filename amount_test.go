@@ -195,3 +195,27 @@ func TestInt(t *testing.T) {
 	testInt = testAmount.Int()
 	assertEqual(testInt, 12)
 }
+
+func TestString(t *testing.T) {
+	assertEqual := func(val interface{}, exp interface{}) {
+		if val != exp {
+			t.Errorf("Expected %v, got %v.", exp, val)
+		}
+	}
+
+	testAmount := Amount(1234)
+	testInt := testAmount.String()
+	assertEqual(testInt, "12.34")
+
+	testAmount = Amount(34)
+	testInt = testAmount.String()
+	assertEqual(testInt, "0.34")
+
+	testAmount = Amount(1200)
+	testInt = testAmount.String()
+	assertEqual(testInt, "12.00")
+
+	testAmount = Amount(1)
+	testInt = testAmount.String()
+	assertEqual(testInt, "0.01")
+}
