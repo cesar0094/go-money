@@ -2,7 +2,6 @@ package money
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 	"math"
 	"strconv"
@@ -16,7 +15,7 @@ func (amount Amount) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		Name: xml.Name{Space: "", Local: start.Name.Local},
 		Attr: []xml.Attr{},
 	}
-	if err := e.EncodeElement(float64(amount)/100, elem); err != nil {
+	if err := e.EncodeElement(amount.String(), elem); err != nil {
 		return err
 	}
 	return nil
@@ -70,8 +69,7 @@ func Parse(amountStr string) (Amount, error) {
 }
 
 func (amount Amount) MarshalJSON() ([]byte, error) {
-	amountInt := int(amount)
-	return []byte(fmt.Sprintf("%.2f", float64(amountInt)/100)), nil
+	return []byte(amount.String()), nil
 }
 
 func (amount *Amount) UnmarshalJSON(bytes []byte) error {
@@ -92,4 +90,12 @@ func (amount *Amount) Float() float64 {
 func (amount *Amount) Int() int {
 	amountInt := int(*amount)
 	return amountInt / 100
+}
+
+func (amount *Amount) String() string {
+	amountStr := strconv.Itoa(int(*amount))
+	length := len(amountStr)
+	decimals := amountStr[length-2:]
+	integers := amountStr[:length-2]
+	return integers + "." + decimals
 }
