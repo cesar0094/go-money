@@ -93,6 +93,10 @@ func (amount *Amount) Int() int {
 }
 
 func (amount *Amount) String() string {
+	// stay close to how Go prints float64(0.00)
+	if int(*amount) == 0 {
+		return "0"
+	}
 	amountStr := strconv.Itoa(int(*amount))
 	length := len(amountStr)
 	// Add left zeros to have format "0.01" and "0.12"
