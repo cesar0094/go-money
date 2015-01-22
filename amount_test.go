@@ -218,4 +218,8 @@ func TestString(t *testing.T) {
 	testAmount = Amount(1)
 	testInt = testAmount.String()
 	assertEqual(testInt, "0.01")
+
+	testAmount = Amount(0)
+	testInt = testAmount.String()
+	assertEqual(testInt, "0")
 }
